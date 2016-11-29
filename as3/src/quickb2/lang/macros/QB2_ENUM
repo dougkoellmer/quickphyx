@@ -1,0 +1,6 @@
+/*{  qb2Enum.lock(prototype.constructor);  }
+
+public static function getCount():int
+{
+	return qb2Enum.getCount(prototype.constructor);
+}*/

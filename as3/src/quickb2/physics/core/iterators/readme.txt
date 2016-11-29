@@ -1,0 +1,1 @@
+Iterators are the recommended (sometimes only) way to traverse collections of various physics objects in quickb2, most commonly the children of qb2A_PhysicsObjectContainers.

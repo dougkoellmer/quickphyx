@@ -1,0 +1,1 @@
+This package abstracts an otherwise annoying type introspection/reflection API.

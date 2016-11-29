@@ -1,0 +1,1 @@
+Effect fields are an easy way to add procedural forces and movement to objects in your world.

@@ -1,0 +1,11 @@
+import quickb2.lang.foundation.qb2AbstractClassEnforcer;
+import quickb2.lang.errors.*;
+/*
+if ( (this as Object).constructor === prototype.constructor )
+{
+	if ( !(qb2AbstractClassEnforcer.getInstance().isDisabled()) )
+	{
+		qb2U_Error.throwCode(qb2E_CompilerErrorCode.ABSTRACT_CLASS);
+	}
+}
+*/

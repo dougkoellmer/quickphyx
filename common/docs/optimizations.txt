@@ -1,0 +1,17 @@
+- make qb2P_FlushNode/Colllector only get clean called on destroy
+
+- make above structs not zero out property maps and flags on clear, unless it has to.
+
+- maybe have affine matrix have some way to identify itself as an indentity...can make matrix mulplitation a lot faster in many cases.
+
+- make it so style rules can only have one parent sheet...no practical need for supporting multiple parents.
+
+- perhaps pass an optional "max property" into the propertyMap inherit-type methods, so we don't go past the core physics properties needed for back end...might then also organize physics properties so that those irrelevant for the back end are at the end of the list.
+
+- might have a subclass of bitset that caches some things, like whether it's already cleared, the top bit block, the bottom bit block, and so on, to help speed some operations up...will have to expose some overridable methods probably in the base class
+
+- perhaps have an "approximate center of mass" flag as part of the property system...probably some good performance improvement if box2d handles center of mass itself, at the potential cost of some accuracy when approximating the geometry for curved boundaries.
+
+- if center of mass is set explicitly on a rigid root, and not set otherwise for any sub-object, then the mass reset calculation can be skipped.
+
+- for multiple siblings, all invalidated, we can probably pretty easily just make one ancestor collector, and cache it for all the siblings...instead of remaking it every time...which i think is done as of now.

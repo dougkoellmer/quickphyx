@@ -1,0 +1,1 @@
+A simplified DOM-inspired event system.

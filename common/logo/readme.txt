@@ -1,0 +1,1 @@
+The project logo and some source files to recreate it.  I really wish I could use some open-source file format for the logo's vector source, like Inkscape or something, but Adobe is simply awesome for vector graphics.

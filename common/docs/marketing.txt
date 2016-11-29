@@ -1,0 +1,16 @@
+
+As I started using some popular physics engines, I wondered why their APIs were so difficult. They require things done in a very strict, and oft-times non-intuitive order, and to break that order down requires about n-thousand lines of linear and tree-based asynchronous queues, locks, fdsadfsdfsdfsdf. Then you need a nice API to sit on top of that mess. That's what Quickphyx does. It make physics simulation so easy, you wonder why nobody's done it before.
+
+QuickPhyx, bringing DOM paradigms to physics simulation.
+
+Style your world with CSS-like property flows. Handle events with DOM-style event listeners. Add/remove
+
+Physics...simplified.
+
+The physics API you've always wanted, without even knowing it.
+
+What You Expect Is What You Get  WYEIWYG
+
+
+
+...which brings hierarchical object management, a css-inspired property system, and dom-style events

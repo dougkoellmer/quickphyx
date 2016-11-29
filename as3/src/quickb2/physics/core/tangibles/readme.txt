@@ -1,0 +1,1 @@
+Classes here represent physics objects that have a "tangible" presence, and can be constrained by joints.

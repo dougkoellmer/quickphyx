@@ -1,0 +1,1 @@
+A really simple unit testing framework.  Didn't want to write or integrate anything complicated in order to make porting as easy as possible.

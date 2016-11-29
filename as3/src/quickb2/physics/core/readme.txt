@@ -1,0 +1,1 @@
+quickb2.physics.core contains all of the base classes that the rest of the quickb2.physics subpackages are built upon.

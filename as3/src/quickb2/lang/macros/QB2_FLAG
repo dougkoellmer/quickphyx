@@ -1,0 +1,13 @@
+/*{  qb2Flag.initialized(prototype.constructor);  }
+
+
+public static function getCount():int
+{
+	return qb2Flag.getCount(prototype.constructor);
+}
+
+public static function getAllowedBits():uint
+{
+	return qb2Flag.getAllowedBits(prototype.constructor);
+}
+*/

@@ -1,0 +1,1 @@
+This folder contains some useful classes that extend the core classes in the quickb2.physics.base.tangibles package.

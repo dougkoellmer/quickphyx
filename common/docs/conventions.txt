@@ -1,0 +1,3 @@
+- static class members first, then instance members, then constructors, then methods.
+
+- put simple one-line accessor methods down near bottom of class.

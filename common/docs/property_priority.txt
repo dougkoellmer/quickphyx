@@ -1,0 +1,3 @@
+- individual component properties (_X, _Y, _Z) of an object component property have priority, even if they're inherited from an ancestor.
+
+BAHAADSASD!!!

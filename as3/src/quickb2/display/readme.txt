@@ -1,0 +1,1 @@
+Contains interfaces and utilities for immediate-mode and retain-mode display.  No actual rendering implementation is provided here.

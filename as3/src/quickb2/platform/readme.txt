@@ -1,0 +1,1 @@
+Contains interfaces and such that should be implemented to provide platform-specific services.

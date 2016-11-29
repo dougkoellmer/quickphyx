@@ -1,0 +1,1 @@
+Contains the top-level base classes and interfaces that are subclassed/implemented/used throughout all of the quickb2 library.

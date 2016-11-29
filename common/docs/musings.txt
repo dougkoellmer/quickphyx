@@ -1,0 +1,222 @@
+just a place to keep some random thoughts...
+
+
+
+
+
+HOW FAR SHOULD PROPERTIES GO?
+=============================
+
+Properties are taking over, mass and density being the latest victims...where does it stop?
+
+Geometry:  Technically treating geometry as a property could be handled by a jquery-like library sitting on top of qp without any real significant extra overhead.  Advantage of doing it natively, is that you could set geometry on a body, then all shapes added to that body would have that geometry, after the fact
+
+Transform: This is tough, because position on roots of rigid trees can change every frame...what happens to the object's propertyMap?  POssible solution is that, if transform is defined in a style sheet, it only applies to objects that are static, or descendants of a rigid object.
+
+Velocity:  Also strange for rigid roots, as it might change every frame.
+
+Actor:  Not sure how this would work...as far as a style sheet, I guess you could define an image path, or an id that's part of a browser-like DOM.  Would be easy to integrate into the property system as far as property events go, and actually, there's no event for actor changed, so it could actually fit in nicely.
+
+Is_Sleeping: 
+
+Other language issues: Would work fine in javascript...Java, with that funky generics syntax that does implicit casting, I don't think it would be too bad. C, haxe, don't know.
+
+
+
+
+
+
+HOW MASS AND DENSITY WORK
+=========================
+
+- have to circle around and adjust masses higher up the tree if basically anything mass/density-related happens to a descendant that has some ancestor with mass defined...this includes adding objects to tree...have to do this in order to "rebalance" masses of objects in subtree with no mass/density defined...need to rebalance with the assumption that none of the ancestor's descendants have mass/density defined...so a parent has 100 mass set, with two geometrically identical children...one child B then sets its mass to 100 also...have to circle around to parent, after child mass change is validated, and adjust the tree so that child A keeps 50 mass like it should, but child B is skipped in the rebalance, to keep its 100 effective and explicit mass....so parent ends up with 150 effective mass, despite having 100 explicit mass.
+
+- should mass be additive instead of the above weirdness?  Might make mass rebalance algorithm harder, but may make more sense to the user.
+
+- variable changes that require mass events: center-of-mass, sub-rigid transform, density, density unit change, mass, pixelsPerMeter, sub-rigid isActive, geometry
+
+- objects start at zero mass/density by default
+
+- density is pretty much just a normal property, it can never be implicitly changed by anything, and is inherited like any other property.
+
+- mass is a strange property...it overrides density when explicitly told to, but can be cleared implicitly, like when a child shape somehow changes its effective mass right after being told what its mass should be by an ancestor having its mass explicitly set....that ancestor now has null mass.
+
+- if said ancestor had its density set at some point, any children added to it after its mass was explicitly set, will now inherit said density.
+
+- if ancestor sets its mass to something, explicitly, then sets its mass to null, any density set on the ancestor, or its ancestors, is used to determine masses of descendants.
+
+- if said ancestor(s) don't have any densities set, then descendants get zero mass.
+
+- if a child shape sets it mass to something explicit, then a parent set *its* mass to something explicit, child shape gets its mass cleared, unless the mass ends up being the same.
+
+- if object sets its mass to something, then gets added to another object, it retains its mass
+
+- if object sets its mass to something, gets its mass implicitly cleared, then gets added, then
+
+
+
+- joints generally cannot draw themselves with just draw(), they need the stylesheet for the mostpart.
+- perhaps joints should only implement drawWithStyle, and drawWithStyle shouldn't extend qb2IDraw_able??
+- bounded plane has trouble because it wants to chain down app-specific style params/options to owned entities, but not the base params.
+- might be solved by having a third parameter (default true) on drawWithStyle that says whether or not to populateGraphics
+- i think generally, if an object "owns" another drawable object, or is responsible for drawing qb2StyleSheetClass's, it will have to override drawWithStyle instead of using default.
+- a simple case of being able to use the "default" drawWithStyle method is qb2GeoCircle, even if qb2A_GeoEntity had a qb2StyleSheetClass for vertices....if it haf a qb2StyleSheetClass for centroids, it qb2A_Geoentity could handle that itself in the base function
+- an interesting note is that qb2StyleSheetParam/Option's of a qb2StyleSheetClass can still be drawn appropriately in the following case...you have a rule for a qb2Shape that sets qb2A_GeoEntity::STYLESHEETPARAM_CENTROID_RADIUS...hmm, something about slipping through cracks
+- might not be able to reuse the qb2GeoPoint radius style param...maybe you can though
+
+
+
+RESPONSIBILITIES OF VALIDATOR
+=====================
+
+- must collect objects that are dirtied, and aggregate them into a queue.
+
+- must process this queue when certain things happen which require events to be dispatched synchronously, or before entering the back end physics, and after leaving back end physics.
+
+- must keep objects in the dirty queue until they're completely validated...this might take more than one validation cycle.
+
+- objects can fail to be validated when the back end says an operation, somewhat unexpectedly, cannot be carried out at this time, so the dirty object must remain in the queue
+
+- objects in the dirty queue, when validated, must account for the fact that objects above and below them in the tree, might also be in the dirty queue
+
+- if an object should have been created by the back end, but couldn't be, then forces are applied to it, those forces have to be queued until the back end can create the object and apply them
+
+- both user-facing and user-derived quickb2 classes have to be notified about when properties change...this could mean properties in general, or in detail what properties changed...probably the latter...these have to be sent out as events most likely, so that recursive operations requiring validation work properly.
+
+- when back-end joints cannot be created, because their attached bodies haven't been created yet, we have to queue those joint creation operations (with their property maps), until after the validation cycle, but before we actually exit the cycle and send events to user-code.
+
+- validator has to account for recursive invalidations from the validation process itself, for example when a property change requires the back end to remake geometry, but we're in the middle of a timestep, so the operation fails...have to put the object in a queue to be invalidated after the validation process finishes...note that ifthe object is already in the dirty queue, then a flag should probably just be appended.
+
+- must fire mass change events up the tree when a shape has its mass changed directly....must fire mass change events up to the top of a rigid hierarchy if geometry and/or transformation changed (at or?) below the top of a rigid hierarchy
+
+- must fire descendant added/remove events up the tree
+
+- must fire added/removed to/from world events down the tree.
+
+- must throw readable error if any object is invalidated while we're in the validation loop...the only place this could practically happen is from the back end, or from the pre/post calls sent to the outside world...in the latter case, a user-derived class must be told clearly that you can't set properties, or modify the tree, or anything really, inside the callback...hmm actually...maybe try to limit it to just modifying the tree being illegal.
+
+
+OK!!!!!!!!!  Current plan...Keep lazy validation system in place, as it mostly is, in concept...things to do are have a "back end result" system that can leverage the current dirty queue system to retain validate structs (on the dirty object wrappers) to avoid recalculation...the retained validate structs can be leveraged immediately after a validation cycle (during the compacting process), or during the "next" validation cycle, depending on the result code returned from the back-end, whereupon the validate structs are nulled out on the wrapper, and released to the pool...this means we can get rid of the seperate "joint" dirty queue, as the reasoning for its existence is, i believe, flawed...we also have to keep track of when an object is "redirtied", and throwing away the retained validate struct when that happens.
+
+Also have to have an array of delayed forces, either on the wrapper or the struct...not sure which yet
+
+As far as pre/post updating, these will be sepearate from the validation loop...for pre-step, I think we'll send down property map, but I'm not sure how useful they'll be in some situations, because, for things like car, for example, the car body has to know about properties of children, while it's updating...you'd have to couple the shit out of the system to make use of the concatted property map...instead, it might be best if objects set up a per-instance cache of properties where appropriate, and listen for property changes, updating their cache appropriately....this will avoid repeated walks up the tree...may have to make a somewhat robust "property event change" system.
+
+
+
+
+WAYS TO DO VALIDATION:
+======================
+
+- always go through whole tree...challenges are that trees can be disparate, and there's unnecessary performance overhead from always concating properties and transforms
+
+- do validation anytime anything is invalidated...eh
+
+- do validation when more than one object is dirtied...so let one object get as dirty as it wants to, but if a second object wants to get dirty, we first have to validate the first object...problems here are that there's no opportunity for some optimizations, like caching already-collected ancestor validateStructs for two or more dirty objects with same ancestor...also, we have to maintain a seperate array of objects that could not be validated because the back end is locked...some bookkeeping nightmares might come up...another minor thing is that if I, say, set a property on something, then enter the pre-step validation loop, the pre-step validation loop could technically handle that proprety change of the descendant, but there's a lot of extra bookkeeping involved with that
+
+- do lazy validation (current system)...problems are intense complexity of algorithm, and performance issues from that, although they should be outweighted by "cleaner" methods...if including pre-/post-step validation cycle, potential problems with order of walk through the tree could happen.
+
+
+
+ISSUES OF DOING PRE AND POST STEP VALIDATION:
+======================================
+
+- pre...must at the least concat all properties for use by derived classes...don't think rigid-body-transform is required, but could be useful...for example, you apply force to a car that is part of some nested, rotated groups...the applyForce method ultimately needs to transform that force to world coordinates
+
+- post...if doing debug draw, must concat whole-tree-transform, and push style properties to graphics context if we have a style sheet or object-specific style properties defined.
+
+- problem with concatting property map is as follows...car has dependent parts that may be well below its level in the tree...properties for these 
+
+
+
+general challanges
+=================
+
+- how to do errors and exceptions
+
+- are recursive operations on an eent listener a problem...try to think of problem case.
+
+
+
+math library challenges
+=========================
+
+- figure out how to do intersections
+
+
+geo convertTo/Array,
+=============
+
+- convertTo/copy can only be implemented if an entity is ALWAYS convertable to T, so a square is convertable to a rectangle, but not vice versa.
+
+- convertTo must 
+
+- allowing convertTo/copy where an entity is sometimes convertable to T is just too time consuming to check for many situations
+
+- convertTo/Array WILL work where T is a superclass of a class that the entitiy is always convertable to
+
+- convertToArray can only be implemented if an entity is capable of having more than one of T as subentities.
+
+- convertToArray returns the reasonable maximum number of subentities that are required to represent an entity...a bounding box returns its four corners, not just its min/max.
+
+- nextDecomposition returns only subclasses of qb2A_GeoEntity, not radii and stuff like that.
+
+- nextGeometry only works if an entity is capable of having more than one of T as subentities.
+
+- convertTo, when confronted with a superclass T that has two subclasses it can be converted to, will choose the simpler subclass, e.g. bounding ball when confronted with qb2A_GeoCurve, will convert to a circle, not an ellipse, or spline, etc.
+
+- convertTo should only accept T's that are at the same library level (abstraction), or lower.
+
+
+
+
+problems with unifying 2d/3d geometric entities
+================================================
+
+- methods for setting x/y/z components of coordinatess
+
+- some vector operations require anothe vector in 3d, nothing in 2d
+
+
+
+friction joints to simulate z friction have to be updated when...
+====================================
+
+- a shape is added to the world
+
+- a shape is removed from the world
+
+- a shape's z index is changed
+
+- the world's gravityZ is changed
+
+- a ubiquitous terrain is added, removed, or its z index changes
+
+- there's contact or end contact with a non-ubiquitous terrain
+
+- frictionZ of a shape changes
+
+- shape mass/geometry changes
+
+- a shape's body changes to/from kinematic
+
+- a shapes frictionZ optimization mode changes (not yet implemented).
+
+
+
+
+should it be in the public api...
+==================================
+
+- will it be frequently used? then yes
+
+- is there another way to do it, even if it's a little more verbose ?  then no
+
+
+
+
+
+
+- config file must have getinstance, copy, and the public vars
+
+- config target must have config member, getter/setter, copy call in clone, default initConfig parameter in constructor, and init function that actually sets the config

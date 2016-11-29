@@ -1,0 +1,2 @@
+This folder contains poor-man's (very poor) c-style macros.  The point with these macros is to reuse and/or inline code at compile-time,
+providing optimization of both the programmer's and the program's execution.

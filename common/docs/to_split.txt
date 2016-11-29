@@ -1,0 +1,8 @@
+- state machine to stachine
+
+- math to shmath...not sure about name...maybe mathishard
+
+- event stuff to revent
+
+- property, bit, iterator (perhaps more, like json interfaces and other stuff from swarm) to strux0rs
+

@@ -1,0 +1,5 @@
+- test decreasing the mass of a body, then removing it, and making sure ancestors have the correct mass.
+
+- test recursively adding/removing from a parent in event handlers.
+
+- test that event pooling works right.

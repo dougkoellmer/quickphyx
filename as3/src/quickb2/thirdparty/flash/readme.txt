@@ -1,0 +1,1 @@
+Contains flash-specific code for implementing both optional and required interfaces and abstract base classes.

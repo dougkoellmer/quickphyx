@@ -1,0 +1,98 @@
+2/22/2011  (version 0.7) (not fully implemented yet...some of the below are what *will* be in 0.7 release)
+
+- finally got around to implementing effects, i.e. qb2EffectField and its subclasses
+
+- implemented qb2Tangible::slice()
+
+- added several more demos to qb2DemoReel to showcase new features, and cleaned up some of the code so that people can more easily copy/paste from demo source if so inclined.
+
+- tons of minor optimizations and some bug fixes...internally spread some code around in an attempt to have qb2Tangible be less than like 1000 lines
+
+- created a qb2ContactFilter class to wrap up all qb2Tangible member properties having to do with contact filtering
+
+- changed the qb2Object::clone() function to have a "deep" option that is true by default.
+
+- brought in an external library to handle event dispatching, called rEvent.  I wrote this library from scratch and it has its own open source project.
+
+- merged in As3Math to be a part of QuickB2 directly...this means you'll have to rename any instance of amPoint2d to qb2GeoPoint2d (for example)
+
+- wrote a sub-package to handle immediate-mode rendering in quickb2.drawing.*;
+
+- cleaned up some of the qb2FlashLoader stuff, making it more manageable internally, and made some more examples
+
+- made the immediate-mode and retain-mode rendering hooks much cleaner and integrateable with other libraries by allowing users to implement interfaces that QuickB2 understands...one side effect of this that there's no strict reliance on Flash's built-in API's, making the library as a whole more modular and portable...Flash implementations of the interface hooks are included, so the practical change to the user is minimal.
+
+- added more modular hooks for mouse, keyboard, and sound...again, the user implements interfaces to mitigate reliance on Flash, and again, Flash implementations are included so there's no real practical effect on the average user.
+
+- merged the update() and debugDraw() tree passes into one pass for much more efficiency.
+
+- major file/folder restructuring, so that you can bring in all QuickB2 code and dependencies just by adding the QuickB2/src classpath to your project...I really don't know why I didn't do this before.
+
+- implemented a more classical C++-style standard for getter and setter functions, e.g. "public function getFriction():Number" instead of "public function get friction():Number...several advantages to this exist...(1) easier to find the function you're looking for with an IDE's autocomplete, (2) more copy/paste-portable if (when?) QuickB2 ever gets ported to other languages, (3) more consistent and readable API.
+
+- significant work on the manual/documentation to bring things up to speed with latest engine revisions.
+
+- applyImpulse, applyForce, and applyTorque all work when an object isn't part of a world...before, an object had to be added to a world before the apply*() functions did anything
+
+- much nicer system for printing notifications/warnings, throwing errors, and asserting, all in an effort to aid debugging and allow people to report issues a lot more easily...by implementing interfaces, the user can route console printing commands any way they like...conditional compilation is also added so that debug stuff has less of a footprint in release modes...errors are now thrown inside contact listeners as well, working around an issue with Adobe Alchemy surpressing errors.
+
+- switched qb2ObjectContainer to use linked lists internally...this has some minor API consequences, the biggest being that you cannot iterate through a container's children using indeces anymore (i.e. getObjectAt()), but instead must use qb2Object::getNextObject()
+
+- improvements to iterators...qb2TreeIterator and qb2ChildIterator (the latter is new) inherhit from qb2Iterator, providing a consistent and convenient API for iterators...using the static getInstance() function is now reliable in that it will not return an iterator that is already in use.
+
+- improvements to debug gui.
+
+- heavy use of interfaces everywhere
+
+- cutting a lot of fat in API...functions that were basically just simple wrappers of other functions are removed for the most part to make the API more readable, at the cost of user-code being slightly more verbose in some circumstances...a user can subclass and make their own wrappers though in many cases if it's a big problem.
+
+- new and improved debug gui panel.
+
+
+
+
+1/13/2011  (version 0.6)
+
+- added an extension for top-down car physics and game mechanics, called TopDown
+
+- updates and corrections to the manual
+
+- included generated documentation on svn (before you had to generate it yourself).
+
+- fixed a bug with changing the mass of an in-world object from not zero to zero and vice versa
+
+- exposed several more things from box2d, namely continuous physics for qb2world, and more stuff to query/set through contact events.
+
+- made a base class for qb2ContactEvent and qb2SubContactEvent called qb2BaseContactEvent to consolidate some of the similar parts of their API's.
+
+- changed around some component properties for various proxies, fixed some formatting and typos
+
+- made qb2DebugPanel remember your settings locally and cleaned up a lot of code there...also added Step button and RAM usage
+
+- added car example, stress test, and distanceTo demos to qb2DemoReel
+
+- got rid of qb2IDrawable and the interfaces package, moved qb2IRigidObject to tangibles package
+
+- added qb2Preloader...just a generic preloader that's useful for just rapid prototypes until you implement a fancier one
+
+- added class hierarchy to docs folder.
+
+- added qb2EventDispatcher to QuickB2.events in order to make QuickB2's optimized event dispatching system more easily available to subclasses and extensions, especially those not in the qb2Object class hierarchy...previously qb2Object did all the work
+
+- first full version of top-down friction z implemented, along with terrains for differential friction...still some customizability, realism, and efficiency to add
+
+- added qb2Terrain to QuickB2.stock.  Adding a terrain to your world is a way for frictionZ to be modified automatically, like you can create a lake that sets an object's frictionZ be much lower whenever it's over the lake.
+
+- moved the clone function so it's declared virtually in qb2Object, instead of seperately in qb2Tangible and qb2Joint.
+
+- added a distanceTo function to qb2Tangible...finds the shortest distance between two tangibles' geometry and optionally outputs the closest points and the vector seperating them
+
+- various inlining to squeeze out little bits of performance here and there
+
+- added a qb2TreeIterator to make it easy to do a level-order traversal of a qb2ObjectContainer hieararchy.
+
+- changed qb2AddRemoveEvent into qb2ContainerEvent with the advent of the INDEX_CHANGED event type, which listens for when an object gets it relative z-order in a container changed...also added event types that allow you to listen for when a descendant of a container adds/removes an object.
+
+- created a logo
+
+- rehauled the whole qb2Object class hierarchy to use bitmasks in place of all boolean properties...boolean-based getters/setters are left in place so you can still have the impression of working with booleans if you're a noob.

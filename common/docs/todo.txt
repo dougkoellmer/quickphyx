@@ -1,0 +1,241 @@
+- implement joint id object finding
+
+- change velocities and transforms when they get changed due to sheet/group/id change
+
+- figure out how to draw and compute psuedo types...propertymap collection?
+
+- make "get prop"-type methods work correctly for coord props
+
+- just for event dispatching, make changes to x/y/z of coord prop signal a change in the coord prop itself
+
+
+
+
+
+- apply*() functions won't currently work if you're in the middle of a contact callback, and you add something to the world tree, then call apply*()...sigh
+
+- implement new gravity system for qb2Groups.
+
+- have to manually fire property change events for certain things, outside flush flow, like transform changes, actor changes, etc.
+
+- make copy and clone work correctly for physics objects...copy has to do things like ignore contact reporting flags,
+
+- take into account linear velocity unit changes.
+
+- take into account "isActive" for cancelling collisions in the callback phase...this includes for body isActive getting changed in the middle of a timestep, and for sub-rigid shapes in middle of time step, since their "isActive==false" is simply setting them to zero mass and ghosting them.
+
+
+
+
+DO THIS SHIT SOONER
+
+- have to have center of mass stored on the collector, and transformed down for each dip into the tree if it's changed.
+
+- modify get*Property API to account for new point property paradigm.
+
+
+
+
+- make it so you can set velocity on a group, and it trickles down to ancestor body's and top-level shapes.
+
+- see if velocities can be piggy-backed onto property flow system...would be just like "isActive", in that velocity change isn't trickled below rigid root
+
+
+
+- arbitrary curves and areas bounded thereby, need center of mass and intertia crap now too.
+
+
+
+
+
+major things:
+
+- getting property sheet actually working
+
+- getting mass system working properly.
+
+- perhaps (perhaps!) move "queues" from flush tree into back-end, or otherwise just use some kind of job queue instead of caching the collectors.
+
+
+
+
+- take care of composite curve case, and non-closed curve used for creating a polygon
+
+- in qb2Shape, account for rounded end caps or not when drawing curves
+
+- get contacts working
+
+
+
+- isEqualTo for all qb2Geo (ellipses need it, at the least).
+
+- isEqualTo for ellipses
+
+- state machine needs to be ported from java...or all of quickb2 ported to java :p
+
+- implement joint support in back end.
+
+- distanceTo
+
+- boundingball calculation
+
+- need a build step or something to remove unecessary imports.
+
+- implement cache clearing upon update of style sheet rule
+
+- make it so the FirstClassObjectIterator can iterate in all kinds of different ways...over just the super class, over just the directly implemented interfaces, over the super class chain, over the implemented interface chain, and over everything
+
+- test nested toString construction.
+
+- have separate arrays for forward and reverse gears.
+
+- torque curve with one entry doesn't work...
+
+- make an explosion utility, that sends obejcts nearby a given point flying...maybe make this an effect?
+
+- add stickiness parameter
+
+- use qb2ISound for sound field
+
+- merge update and debug draw loop (move JOINS_IN_DEBUG_DRAWING checking to update loop too, and make direct calls to drawDebug for container work).
+
+- implement a manager class or something where you can provide a tangible and a qb2I_Sound, and the sound is played on contact...maybe
+
+- make terrain work the same way as qb2Effect as regards ubiquity.
+
+- add to manual: order of class members (static first, then instance members, then constructor, then functions), initialize() within constructor
+
+- make sure density is preserved in slicing
+
+- fix drawing tracks
+
+- make tires into bodies
+
+- put thing about contact listener performance in manual under optimization
+
+- merge all torque curve stuff into engine class
+
+- test that collide connected works
+
+- sort torques in qb2Engine lazily.
+
+- test car scaling.
+
+- nmake contact iterator
+
+- add render quality to debug gui thing
+
+- move some trackbrain members to config (you'll know which ones).
+
+- lateral offset to track brain (for passing and some randomness).
+
+- a suite of built in cars would be nice
+
+- being able to specify acceleration and have the rest of car parameters filled in would be nice
+
+
+- bound circles
+
+- virtual function on qb2Object that is overloaded by subclasses to determine what it contributes as far as geometry for bounding reps (maybe).
+
+- have explode preserve velocities correctly.
+
+- have revolute spring working off of forces
+
+- have a isTouching type function
+
+- make laser smoother
+
+
+TESTING
+
+- make sure set object only calls mass change thing once
+
+- test adding jello to body and world back and forth
+
+- test moving and adding points for polygon
+
+- make sure joint throws error when you repeatedly add and remove its attached object to/from the world (without destruction listener assigned.
+
+- try to explode a group out of a body (jello out of a body).
+
+- test jello leaving a kill box by positions
+
+- test clone functions for all 3 types
+
+- test that restitution is perserved when explodiong a rounded rect
+
+- make sure that iterators traverse trees/objects correctly, especially for if they respect types correctly.
+
+- test that linked list is working right
+
+
+
+
+DEMOS
+=====
+
+- have some demo where there are multiple shapes all sharing the same geometry instance.
+
+- need demo showing off curves
+
+- need demo with shatter...should be pretty simply to implement after slice is done.
+
+
+
+
+=== Box2d ISSUES
+
+- weld joint connecting two fixedRotation bodies fails (something to do with box2d, 99%).
+
+- setting identical limits for piston joint seems to make the limit set to zero or something.
+
+
+
+=== eventually
+
+- have springs snap to position if they are either (a) within a certain distance to their length and under a certain speed, or (b) moving at a high enough frequency back and forth past their length (meaning very high K/damping)
+
+- figure out a better way for trip sensor to define what object is visiting it, perhaps giving it a bit flag, each bit standing for a level in the world hierarchy...this could also mean getting rid of the otherObject thing for contact event
+
+- matrix transform functions...major thing here is to allow non-uniform scaling and skewing.
+
+- have getLinearVel at pnt type functions be available when an object isn't in the world
+
+- component icons
+
+- shatter-type functions
+
+- implement get inertia for all tangibles
+
+- triangle mapping utilities of some kind, at least for softbodies, so you map a bitmap
+
+- expose AABB query
+
+- expose raycast
+
+- expose other joints (?)
+
+- have box2d git thing be pulled in automatically
+
+- fix elbow joints for qb2Stock polyline body...give them limits so they don't tweek out in extreme situations.
+
+
+
+FUN
+
+- gear maker
+
+- make a ragdoll class
+
+- make a rope class
+
+- tgheo walker class.
+
+- make a cloth class
+
+- make chain class
+
+- explosion shift
+
+- denting utility

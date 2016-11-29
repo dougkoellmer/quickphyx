@@ -1,0 +1,1 @@
+The various events that qb2A_PhysicsObject subclasses can fire.
