@@ -1,8 +1,8 @@
 quickphyx is a high-level game physics engine with an extensible, event-driven DOM-style API, CSS-inspired property system, and several built-in modules for simulating car physics, soft bodies, force effect fields, and much more. It grew out of a simpler Flash library called quickb2 by the same author and is still in a transitional period as it's being revamped and ported to other languages. In the mean time check out these resources to stoke your interest:
 
-* [http://quickb2.dougkoellmer.com/bin/qb2DemoReel.swf](http://quickb2.dougkoellmer.com/bin/qb2DemoReel.swf) - Demo of the abstractions quickphyx provides.
+* [http://dougkoellmer.com/quickphyx/demo](http://dougkoellmer.com/quickphyx/demo) - Demo of the abstractions quickphyx provides.
 * [https://code.google.com/p/quickb2/](https://code.google.com/p/quickb2/) - Code repository for original quickb2 library.
-* [http://quickb2.dougkoellmer.com/forum/](http://quickb2.dougkoellmer.com/forum/) - Original forum for quickb2, but many questions are still applicable to quickphyx.
+* [http://dougkoellmer.com/quickphyx/forum/](http://dougkoellmer.com/quickphyx/forum/) - Snapshot of the original quickb2 forum. Unfortunately I let my hosting lapse on Bluehost (old school LAMP hosting) and they supposedly delete all user data, including the forum's SQL, after 30 days. If anyone knows otherwise how I could get this back, please let me know!
   
   
   
